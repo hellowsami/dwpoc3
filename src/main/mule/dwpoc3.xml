@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="34700688-475a-401a-ad70-3692dcece353" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="dwpoc3Flow" doc:id="81001a75-fbd1-4e7e-88e5-4f81a1bd2935" >
+		<http:listener doc:name="Listener" doc:id="40634b92-164a-4fb5-b939-103178603a45" config-ref="HTTP_Listener_config" path="/test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="298d17d5-25d3-476c-b788-551687d01933" message="start flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="e9d19fd0-5b83-4dd5-bcda-a0cf59d388c0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[12,14,16,22,17,15,11,3,19,25,50] filter isEven($) ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="4a99abe5-8ac5-4fd9-af92-297cd8344a09" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="2f0cef2f-544f-4123-823c-79972c7870ff" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(payload orderBy $)  [-1 to 0]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="434d44d4-6766-46a2-a803-981a6e45773c" message="#[payload]"/>
+	</flow>
+</mule>
